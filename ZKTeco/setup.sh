@@ -27,7 +27,7 @@ echo -e "\x1b[1m[\x1b[33m INFO \x1b[0m\x1b[1m]\x1b[22m Setting up the cron job..
 # Get the current directory
 
 if [ -f "$DIR/cf/runner.sh" ]; then
-  (sudo crontab -l 2>/dev/null; echo "* * * * * cd $DIR && cf/runner.sh >> $DIR/debug.log 2>&1") | sudo crontab -
+  (crontab -l 2>/dev/null; echo "* * * * * cd $DIR && cf/runner.sh >> $DIR/debug.log 2>&1") | crontab -
 else
   echo -e "\x1b[1m[\x1b[31m ERROR \x1b[0m\x1b[1m]\x1b[22m File $DIR/cf/runner.sh does not exist. Did you delete it? if so, run -> 'git restore .' to restore it"
   exit 1
