@@ -1,0 +1,3 @@
+pyzk
+requests
+pymongo
