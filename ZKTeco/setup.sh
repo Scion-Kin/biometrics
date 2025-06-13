@@ -35,6 +35,8 @@ fi
 
 echo -e "\x1b[1m[\x1b[32m SUCCESS \x1b[0m\x1b[1m]\x1b[22m Cron job for the HikVision integration has been setup successfully!"
 
+git config --global --add safe.directory "$DIR"
+
 # check if oh-my-zsh is installed
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     echo -e "\x1b[1m[\x1b[33m INFO \x1b[0m\x1b[1m]\x1b[22m Installing Oh My Zsh..."
