@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+cd ..
+DIR="$(pwd)"
 
 if [[ $DIR != *"biometrics" ]]; then
   echo -e "\x1b[1m[\x1b[31m ERROR \x1b[0m\x1b[1m]\x1b[22m This script must be run from the biometrics directory."
@@ -21,7 +22,7 @@ sudo service cron start
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r ZKTeco/requirements.txt
 
 echo -e "\x1b[1m[\x1b[33m INFO \x1b[0m\x1b[1m]\x1b[22m Setting up the cron job..."
 # Get the current directory
@@ -35,5 +36,10 @@ fi
 
 echo -e "\x1b[1m[\x1b[32m SUCCESS \x1b[0m\x1b[1m]\x1b[22m Cron job for the HikVision integration has been setup successfully!"
 
-
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# check if oh-my-zsh is installed
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    echo -e "\x1b[1m[\x1b[33m INFO \x1b[0m\x1b[1m]\x1b[22m Installing Oh My Zsh..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+else
+    echo -e "\x1b[1m[\x1b[32m SUCCESS \x1b[0m\x1b[1m]\x1b[22m Oh My Zsh is already installed."
+fi
