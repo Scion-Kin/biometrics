@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
 cd ../ZKTeco
-./puller.py && ./main.py -m MilMall
+./puller.py --verbose
+./main.py -m MilMall --verbose
 ./update_checker.sh

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-cd ..
 DIR="$(pwd)"
 
 if [[ $DIR != *"biometrics" ]]; then
