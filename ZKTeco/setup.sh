@@ -1,6 +1,6 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-if [[ ! "$DIR" == "*/biometrics" ]]; then
+if [[ "$DIR" != *"biometrics" ]]; then
   echo -e "\x1b[1m[\x1b[31m ERROR \x1b[0m\x1b[1m]\x1b[22m This script must be run from the biometrics directory."
   exit 1
 fi
