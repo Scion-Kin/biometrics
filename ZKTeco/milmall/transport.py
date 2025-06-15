@@ -129,7 +129,7 @@ def clock_in(data, auth) -> requests.Response:
         else:
             if response.status_code == 400 and "Already clocked in" in response.text:
                 data['clock_out_time'] = data.pop('clock_in_time')
-                return clock_out(data, auth)  # If already clocked in, clock out first.
+                return requests.Response() # clock_out(data, auth)  # If already clocked in, clock out first.
             else:
                 raise UnknownResponseError(f"Failed to clock in: {response.text}")
 
