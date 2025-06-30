@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime
 from milmall.utils import load_storage, format_data, try_auth
 from milmall.config import urls, business_id, api_url
 from milmall.exceptions import AttendanceFetchError, AuthenticationError, NetworkError, AuthenticationError, UnknownResponseError, TokenRefreshError
@@ -77,20 +78,23 @@ def decide(data) -> requests.Response:
         auth = try_auth()
 
     d = format_data(data)
+    d['timestamp'] = datetime.strptime(d.get('timestamp'), '%Y-%m-%dT%H:%M:%S')
     attendance = get_attendance(d.get('user_id', data.get('attendance_device_id')), auth)
 
-    prev = attendance.get('clock_out_time')
+    prev = attendance.get('check_out', None)
     if prev:
-        if d.get('timestamp') <= prev:
-            return requests.Response()  # No need to send check-out if the new timestamp is earlier than the previous clock-out time.
+        time = datetime.strptime(prev, '%Y-%m-%d %H:%M:%S')
+        if d.get('timestamp') <= time:
+            return requests.Response()
 
         else:
             return clock_in(d, auth)
 
     else:
-        prev = attendance.get('clock_in_time')
+        prev = attendance.get('check_in')
         if prev:
-            if d.get('timestamp') <= prev:
+            time = datetime.strptime(prev, '%Y-%m-%d %H:%M:%S')
+            if d.get('timestamp') <= time:
                 return requests.Response()
             else:
                 return clock_out(d, auth)
@@ -128,14 +132,14 @@ def clock_in(data, auth) -> requests.Response:
             return response
         else:
             if response.status_code == 400 and "Already clocked in" in response.text:
-                data['clock_out_time'] = data.pop('clock_in_time')
+                data['check_out'] = data.pop('clock_in_time')
                 return clock_out(data, auth)  # If already clocked in, clock out first.
             else:
                 raise UnknownResponseError(f"Failed to clock in: {response.text}")
 
     except requests.RequestException as e:
         raise NetworkError(f"Network error occurred while clocking in: {str(e)}")
-    
+
 
 def clock_out(data, auth) -> requests.Response:
     """
@@ -152,8 +156,8 @@ def clock_out(data, auth) -> requests.Response:
         headers = { 'Authorization': f"Bearer {auth['access_token']}", **default_headers }
 
         # Ensure data is formatted correctly (Compatible with MilMall API)
-        if data.get('timestamp') or data.get('clock_out_time'):
-            data['clock_out_time'] = data.pop('timestamp') if 'timestamp' in data else data.get('clock_out_time')
+        if data.get('timestamp') or data.get('check_out'):
+            data['clock_out_time'] = data.pop('timestamp') if 'timestamp' in data else data.get('check_out')
 
         else:
             raise ValueError("Timestamp is required for clock-out data.")

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-    Copyright (c) 2024-2025 Buffer Park Technologies Pvt. Ltd.
+    Copyright (c) 2024-2025 Buffer Punk Ltd. All rights reserved.
     This module will be open-sourced under the GNU General Public License v3.0.
     Before that, under no circumstances should this module be used by non-licensed users.
     To obtain a license, please see license information at the top level of this repository.
