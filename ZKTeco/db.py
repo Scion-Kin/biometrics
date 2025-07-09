@@ -78,11 +78,35 @@ class DB:
                 },
                 { "$replaceRoot": { "newRoot": "$latestRecord" } }
             ]
+
             latest_records = list(db.aggregate(pipeline))
             return latest_records
 
         except pymongo.errors.PyMongoError as e:
             logger.log(f"Error fetching records: {e}", 'ERROR')
+            return []
+        
+    def collect_filtered_records(self, filters=None):
+        """
+        Collect attendance records from the database based on provided filters.
+        
+        :param filters: A dictionary of filters to apply to the query.
+        :return: A list of attendance records matching the filters.
+        """
+        if self.client is None:
+            logger.log("Database connection failed. Cannot collect records.", 'ERROR')
+            return []
+
+        db = self.get_db('records')
+        if not filters:
+            raise ValueError("Filters must be provided to collect filtered records.")
+
+        try:
+            g = list(db.find(filters, {"_id": 0}))
+            return g
+
+        except pymongo.errors.PyMongoError as e:
+            logger.log(f"Error fetching filtered records: {e}", 'ERROR')
             return []
 
 db = DB()

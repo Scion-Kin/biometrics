@@ -78,13 +78,13 @@ def decide(data) -> requests.Response:
         auth = try_auth()
 
     d = format_data(data)
-    d['timestamp'] = datetime.strptime(d.get('timestamp'), '%Y-%m-%dT%H:%M:%S')
+    rt = datetime.strptime(d.get('timestamp'), '%Y-%m-%dT%H:%M:%S')
     attendance = get_attendance(d.get('user_id', data.get('attendance_device_id')), auth)
 
     prev = attendance.get('check_out', None)
     if prev:
         time = datetime.strptime(prev, '%Y-%m-%d %H:%M:%S')
-        if d.get('timestamp') <= time:
+        if rt <= time:
             return requests.Response()
 
         else:
@@ -94,7 +94,7 @@ def decide(data) -> requests.Response:
         prev = attendance.get('check_in')
         if prev:
             time = datetime.strptime(prev, '%Y-%m-%d %H:%M:%S')
-            if d.get('timestamp') <= time:
+            if rt <= time:
                 return requests.Response()
             else:
                 return clock_out(d, auth)
