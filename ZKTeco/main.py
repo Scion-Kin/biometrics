@@ -80,26 +80,29 @@ def run_attendance():
       logger.log(f'Current time: {now}', 'INFO')
 
       def import_attendance(filters=None):
-          all = db.collect_filtered_records(filters=filters) if filters["timestamp"] else db.collect_latest_records(filters=filters)
-          logger.log(f'{len(all)} records found', 'INFO')
+          all = db.collect_filtered_records(filters=filters) if filters else db.collect_latest_records(filters=filters)
+          if len (all): logger.log(f'{len(all)} records found', 'INFO')
 
-          if not all or len(all) == 0:
-              return # logger.log('No attendance records found. Please run the puller script first.', 'ERROR')
+          if not len(all):
+              return logger.log('No attendance records found.', 'ERROR')
           else:
-              logger.log(f'Found {len(all)} attendance records', 'INFO')
+                logger.log(f'Found {len(all)} attendance records', 'INFO')
+                logger.log('Contacting ERP...', 'INFO')
 
-              logger.log('Contacting ERP...', 'INFO')
-              for record in all:
-                  try:
-                      record['attendance_device_id'] = str(record.get('attendance_device_id')) 
-                      if record.get('_id'): del record['_id']
-                      record['timestamp'] = gISOl(record.get('timestamp'))
-                      res = module.transport.decide(record)
-                      logger.log(f'Response from ERP: {res}', 'INFO')
+                if "--use-bulk" in sys.argv or "-b" in sys.argv:
+                    return module.transport.bulk_submit(all)
 
-                  except Exception as error:
-                      logger.log(f'Error processing record {record.get("attendance_device_id")}: {error}', 'ERROR')
-                      pass
+                for record in all:
+                    try:
+                        record['attendance_device_id'] = str(record.get('attendance_device_id')) 
+                        if record.get('_id'): del record['_id']
+                        record['timestamp'] = gISOl(record.get('timestamp'))
+                        res = module.transport.decide(record, submit=False)
+                        logger.log(f'Response from ERP: {res}', 'INFO')
+
+                    except Exception as error:
+                        logger.log(f'Error processing record {record.get("attendance_device_id")}: {error}', 'ERROR')
+                        pass
 
       now = datetime.now()
       if not is_import:

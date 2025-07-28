@@ -3,6 +3,8 @@ urls = {
     "attendance": "/connector/api/get-attendance",
     "clockin": "/connector/api/clock-in",
     "clockout": "/connector/api/clock-out",
+    "bulk_attendance": "/connector/api/get-all-attendance",
+    "bulk_submit": "/connector/api/bulk-send-attendance",
 }
 business_id = 1  # Change this to your business ID
 api_url = "https://milmall.rw" # Change this to your MilMall API URL

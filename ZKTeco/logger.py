@@ -5,9 +5,15 @@ class Logger:
     def __init__(self, verbose=False, debug_level=0):
         self.levels = { 'ERROR': ERROR, 'SUCCESS': SUCCESS, 'WARNING': WARNING, 'INFO': INFO, 'DEBUG': DEBUG }
         self.verbose = verbose
-        self.DEBUG_LEVEL = debug_level
+        self.DEBUG_LEVEL = int(debug_level)
         self.error_file = open('errors.log', 'a')
         self.log_file = open('logs.log', 'a')
+        self.config = {
+            'log_file': 'logs.log',
+            'error_file': 'errors.log',
+            'verbose': verbose,
+            'debug_level': debug_level
+        }
 
     def log(self, message, level):
         """
@@ -41,13 +47,13 @@ class Logger:
 
         if self.verbose:
             if self.DEBUG_LEVEL == 0: print(log, end='')
-            elif self.DEBUG_LEVEL == 1 and level == self.ERROR: print(log, end='')
-            elif self.DEBUG_LEVEL == 2 and level == self.SUCCESS: print(log, end='')
-            elif self.DEBUG_LEVEL == 3 and level == self.WARNING: print(log, end='')
-            elif self.DEBUG_LEVEL == 4 and level == self.INFO: print(log, end='')
-            elif self.DEBUG_LEVEL == 5 and (level == self.ERROR or level == self.WARNING): print(log, end='')
-            elif self.DEBUG_LEVEL == 6 and (level == self.INFO or level == self.SUCCESS): print(log, end='')
-            elif self.DEBUG_LEVEL == 7 and (level == self.ERROR or level == self.WARNING or level == self.INFO): print(log, end='')
+            elif self.DEBUG_LEVEL == 1 and level == 'ERROR': print(log, end='')
+            elif self.DEBUG_LEVEL == 2 and level == 'SUCCESS': print(log, end='')
+            elif self.DEBUG_LEVEL == 3 and level == 'WARNING': print(log, end='')
+            elif self.DEBUG_LEVEL == 4 and level == 'INFO': print(log, end='')
+            elif self.DEBUG_LEVEL == 5 and (level == 'ERROR' or level == 'WARNING'): print(log, end='')
+            elif self.DEBUG_LEVEL == 6 and (level == 'INFO' or level == 'SUCCESS'): print(log, end='')
+            elif self.DEBUG_LEVEL == 7 and (level == 'ERROR' or level == 'WARNING' or level == 'INFO'): print(log, end='')
 
     def close(self):
         """
