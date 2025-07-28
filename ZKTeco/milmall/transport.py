@@ -141,7 +141,6 @@ def bulk_submit(records: list) -> requests.Response:
     if len(collected) == 0:
         return requests.Response()
 
-    logger.log(f'Sending {collected} records to MilMall API for bulk processing.', 'INFO')
     response = requests.post(url, json={ "bulk_data": collected }, headers=headers)
 
     if response.status_code == 200:
