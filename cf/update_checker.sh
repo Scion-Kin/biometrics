@@ -3,6 +3,8 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+git stash save "Configurations" > /dev/null 2>&1
+
 res=$(git pull 2>&1)
 status=$?
 
@@ -17,6 +19,8 @@ if echo "$res" | grep -qE "Already up[ -]to[ -]date"; then
 else
     echo "Updates applied successfully:"
     echo "$res"
+    echo "Reviving configurations..."
+    git stash pop > /dev/null 2>&1
     echo "Running post-update patch..."
     python3 "$SCRIPT_DIR/patches.py"
 fi
