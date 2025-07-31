@@ -23,7 +23,7 @@ class DB:
             client = pymongo.MongoClient("mongodb://localhost:27017/")
             return client
         except pymongo.errors.ConnectionError as e:
-            logger.log(f"Could not connect to MongoDB: {e}", 'ERROR')
+            logger.error(f"Could not connect to MongoDB: {e}")
             return None
 
     def get_db(self, collection_name):
@@ -50,11 +50,11 @@ class DB:
         if self.client is not None:
             try:
                 self.client.close()
-                logger.log("Database connection closed successfully.", 'SUCCESS')
+                logger.success("Database connection closed successfully.")
             except pymongo.errors.PyMongoError as e:
-                logger.log(f"Error closing database connection: {e}", 'ERROR')
+                logger.error(f"Error closing database connection: {e}")
         else:
-            logger.log("No active database connection to close.", 'WARNING')
+            logger.warning("No active database connection to close.")
 
     def collect_latest_records(self):
         """
@@ -63,7 +63,7 @@ class DB:
         :return: A list of the latest attendance records.
         """
         if self.client is None:
-            logger.log("Database connection failed. Cannot collect records.", 'ERROR')
+            logger.error("Database connection failed. Cannot collect records.")
             return []
 
         db = self.get_db('records')
@@ -83,7 +83,7 @@ class DB:
             return latest_records
 
         except pymongo.errors.PyMongoError as e:
-            logger.log(f"Error fetching records: {e}", 'ERROR')
+            logger.error(f"Error fetching records: {e}")
             return []
         
     def collect_filtered_records(self, filters=None):
@@ -94,7 +94,7 @@ class DB:
         :return: A list of attendance records matching the filters.
         """
         if self.client is None:
-            logger.log("Database connection failed. Cannot collect records.", 'ERROR')
+            logger.error("Database connection failed. Cannot collect records.")
             return []
 
         db = self.get_db('records')
@@ -106,7 +106,7 @@ class DB:
             return g
 
         except pymongo.errors.PyMongoError as e:
-            logger.log(f"Error fetching filtered records: {e}", 'ERROR')
+            logger.error(f"Error fetching filtered records: {e}")
             return []
 
 db = DB()

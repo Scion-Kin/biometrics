@@ -3,6 +3,8 @@
 import os
 import shutil
 
+os.execv("pip3", ["pip3", "install", "--upgrade", "logmachine"])
+
 # First, we need to find the pycaches in the ZKTeco directory
 zkteco_dir = os.path.join(os.path.dirname(__file__), '..', 'ZKTeco')
 pycache_dirs = [os.path.join(root, '__pycache__') for root, dirs, files in os.walk(zkteco_dir) if '__pycache__' in dirs]

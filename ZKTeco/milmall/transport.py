@@ -135,7 +135,7 @@ def bulk_submit(records: list) -> requests.Response:
                     last_attendances_dict[sep].update(res)
 
         except Exception as error:
-            logger.log(f'Error processing record {sep}: {error}', 'ERROR')
+            logger.error(f'Error processing record {sep}: {error}')
             pass
 
     if len(collected) == 0:
@@ -144,8 +144,7 @@ def bulk_submit(records: list) -> requests.Response:
     response = requests.post(url, json={ "bulk_data": collected }, headers=headers)
 
     if response.status_code == 200:
-        if logger.config.get('verbose'):
-            logger.log(response.json(), 'DEBUG')
+        logger.debug(response.json())
         return response
     else:
         raise UnknownResponseError(f"Failed to send bulk attendance records: {response.text}")

@@ -7,17 +7,17 @@ from logger import logger
 
 if __name__ == "__main__":
     for device in devices:
-        logger.log(f"Starting attendance puller for device: {device.get('name')}", 'INFO')
+        logger.info(f"Starting attendance puller for device: {device.get('name')}")
         try:
             client = db.get_db('records')
             if client is None:
-                logger.log(f"Database connection failed. Skiping device {device.get('name')}.", 'ERROR')
+                logger.error(f"Database connection failed. Skiping device {device.get('name')}.")
                 continue
 
             exec(device, 'disable_device')
             records = exec(device, 'get_attendance')
             if not records or len(records) < 1:
-                logger.log(f"No attendance records found for device: {device['name']}", 'WARNING')
+                logger.warning(f"No attendance records found for device: {device['name']}")
                 continue
 
             elif isinstance(records, list):
@@ -27,21 +27,20 @@ if __name__ == "__main__":
                 ]
                 re = client.insert_many(records)
                 if re.acknowledged:
-                    logger.log(f"Inserted {len(re.inserted_ids)} records into the database from: ({device['name']})", 'SUCCESS')
+                    logger.success(f"Inserted {len(re.inserted_ids)} records into the database from: ({device['name']})")
                     exec(device, 'clear_attendance')
 
                 else:
-                    logger.log(f"Failed to insert records into the database for device: {device['name']}", 'ERROR')
-                    logger.log(f"Possible reason: {re}", 'ERROR')
-                    logger.log(f"Please solve the issue and try again.", 'ERROR')
+                    logger.error(f"Failed to insert records into the database for device: {device['name']}")
+                    logger.error(f"Possible reason: {re}")
+                    logger.error(f"Please solve the issue and try again.")
 
         except ConnectionError as ce:
-            logger.log(f"Connection error while processing device {device['name']}: {ce}", 'ERROR')
+            logger.error(f"Connection error while processing device {device['name']}: {ce}")
 
         except Exception as e:
-            logger.log(f"Error while processing device {device['name']}: {e}", 'ERROR')
+            logger.error(f"Error while processing device {device['name']}: {e}")
 
     exec(device, 'enable_device')
     db.close_connection()
-    logger.log("All devices processed. Main script will run next.", "SUCCESS")
-    logger.close()
+    logger.success("All devices processed. Main script will run next.", "SUCCESS")
