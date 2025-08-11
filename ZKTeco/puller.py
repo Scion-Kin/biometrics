@@ -43,4 +43,4 @@ if __name__ == "__main__":
 
     exec(device, 'enable_device')
     db.close_connection()
-    logger.success("All devices processed. Main script will run next.", "SUCCESS")
+    logger.success("All devices processed. Main script will run next.")
