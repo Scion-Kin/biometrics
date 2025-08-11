@@ -101,7 +101,7 @@ def run_attendance():
 
       now = datetime.now()
       if not is_import:
-        import_attendance({'attendance_device_id': { '$in': ids }})
+        import_attendance()
 
       else:
         logger.info('Importing attendance records...')
