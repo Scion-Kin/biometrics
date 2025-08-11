@@ -14,13 +14,13 @@ if [[ $status -ne 0 ]]; then
     exit 1
 fi
 
+git stash pop > /dev/null 2>&1
 if echo "$res" | grep -qE "Already up[ -]to[ -]date"; then
     echo "No updates available."
 else
     echo "Updates applied successfully:"
     echo "$res"
     echo "Reviving configurations..."
-    git stash pop > /dev/null 2>&1
     echo "Running post-update patch..."
     python3 "$SCRIPT_DIR/patches.py"
 fi
