@@ -4,6 +4,7 @@ import os
 import shutil
 
 os.execv("pip3", ["pip3", "install", "--upgrade", "logmachine"])
+os.execv("git", ["git", "restore", "ZKTeco/main.py"])
 
 # First, we need to find the pycaches in the ZKTeco directory
 zkteco_dir = os.path.join(os.path.dirname(__file__), '..', 'ZKTeco')
