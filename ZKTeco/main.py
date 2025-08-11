@@ -19,9 +19,8 @@ from bio_config import devices
 from db import db
 
 def handleExit(type, code=0):
-    if (type == 'error'): logger.error('MGS exit on error. Exiting...')
+    if (code != 0): logger.error('MGS exit on error. Exiting...')
     else: logger.info('MGS graceful exit. Shutting down. Please wait...')
-    """if '--no-cache' not in sys.argv and cache_source == 'redis': redis_client.close()"""
 
     db.close_connection()
     exit(code)
@@ -39,7 +38,7 @@ if '-m' in sys.argv or '--module' in sys.argv:
         module_name = sys.argv[module_index + 1]
         if module_name not in supported_erps:
             raise ValueError(f"Unsupported module: {module_name}. Supported modules are: {', '.join(supported_erps)}")
-        
+
         else:
             module = importlib.import_module(module_name.lower())
 
@@ -78,9 +77,9 @@ def run_attendance():
       logger.info(f'Current time: {now}')
 
       def import_attendance(filters=None):
-          all = db.collect_filtered_records(filters=filters) if filters else db.collect_latest_records(filters=filters)
+          all = db.collect_filtered_records(filters=filters) if filters else db.collect_latest_records()
           if not len(all):
-              return logger.error('No attendance records found.')
+              return logger.info('No attendance records found.')
           else:
                 logger.info(f'Found {len(all)} attendance records')
                 logger.info('Contacting ERP...')
@@ -90,7 +89,7 @@ def run_attendance():
 
                 for record in all:
                     try:
-                        record['attendance_device_id'] = str(record.get('attendance_device_id')) 
+                        record['attendance_device_id'] = str(record.get('attendance_device_id'))
                         if record.get('_id'): del record['_id']
                         record['timestamp'] = gISOl(record.get('timestamp'))
                         res = module.transport.decide(record)

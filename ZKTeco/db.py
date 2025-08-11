@@ -44,7 +44,7 @@ class DB:
     def close_connection(self):
         """
         Close the connection to the MongoDB database.
-        
+
         :return: None
         """
         if self.client is not None:
@@ -59,7 +59,7 @@ class DB:
     def collect_latest_records(self):
         """
         Collect the latest attendance records from the database.
-        
+
         :return: A list of the latest attendance records.
         """
         if self.client is None:
@@ -85,11 +85,11 @@ class DB:
         except pymongo.errors.PyMongoError as e:
             logger.error(f"Error fetching records: {e}")
             return []
-        
+
     def collect_filtered_records(self, filters=None):
         """
         Collect attendance records from the database based on provided filters.
-        
+
         :param filters: A dictionary of filters to apply to the query.
         :return: A list of attendance records matching the filters.
         """
