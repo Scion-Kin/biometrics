@@ -3,8 +3,8 @@
 source venv/bin/activate
 
 cd ZKTeco
-python3 puller.py
 python3 main.py -m MilMall -b
+python3 puller.py
 
 cd ..
 ./cf/update_checker.sh
