@@ -102,7 +102,7 @@ def get_bulk_attendance(date: str, auth) -> list:
         raise UnknownResponseError(f"Failed to fetch bulk attendance data for date {date}: {response.text}")
 
 
-def bulk_submit(records: list) -> requests.Response:
+def bulk_submit(records: list, ids: list=[]) -> requests.Response:
     """
     Sends a bulk request to the MilMall API to process attendance records.
 
@@ -118,9 +118,12 @@ def bulk_submit(records: list) -> requests.Response:
 
     url = f"{api_url}{urls['bulk_submit']}?business_id={business_id}"
     last_attendances = get_bulk_attendance(records[-1].get('timestamp').strftime('%Y-%m-%d'), auth)
-    last_attendances_dict = {att['user_id']: att for att in last_attendances}
+    last_attendances_dict = {int(att['user_id']): att for att in last_attendances}
     collected = []
     for record in records:
+        if str(record.get('attendance_device_id')) not in ids:
+            continue
+
         sep = int(record.get('attendance_device_id'))
         try:
             record['attendance_device_id'] = str(record.get('attendance_device_id'))
@@ -136,7 +139,6 @@ def bulk_submit(records: list) -> requests.Response:
 
         except Exception as error:
             logger.error(f'Error processing record {sep}: {error}')
-            pass
 
     if len(collected) == 0:
         return requests.Response()

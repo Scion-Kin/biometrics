@@ -64,11 +64,11 @@ def run_attendance():
       is_import = '--import' in sys.argv
 
       employeesData = module.transport.get_users(filters=filters, fields=fields)
-      ids = [ str(d.get('employee')) for d in employeesData ]
       if not employeesData or len(employeesData) == 0:
           logger.error('No employees found. Please check the configuration and try again.')
           handleExit('error', 1)
 
+      ids = [ str(d.get('employee')) for d in employeesData ]
       logger.info(f'Employees before filtering: {len(employeesData)}')
       employees = [employee for employee in employeesData if employee.get("employee")]
       logger.info(f'Employees after filtering: {len(employees)}')
@@ -85,7 +85,7 @@ def run_attendance():
                 logger.info('Contacting ERP...')
 
                 if "--use-bulk" in sys.argv or "-b" in sys.argv:
-                    return module.transport.bulk_submit(records)
+                    return module.transport.bulk_submit(records, ids=ids)
 
                 for record in records:
                     try:
