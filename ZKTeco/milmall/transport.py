@@ -15,7 +15,7 @@ default_headers = {
 def time_str(dt: str, reverse=False) -> datetime | str:
     """
     Converts a datetime object to a string in the format 'YYYY-MM-DD HH:MM:SS'.
-    
+
     :param dt: The datetime object to convert
     :return: A datetime object
     """
@@ -123,7 +123,7 @@ def bulk_submit(records: list) -> requests.Response:
     for record in records:
         sep = int(record.get('attendance_device_id'))
         try:
-            record['attendance_device_id'] = str(record.get('attendance_device_id')) 
+            record['attendance_device_id'] = str(record.get('attendance_device_id'))
             if record.get('_id'): del record['_id']
             record['timestamp'] = time_str(record.get('timestamp'), True)
             res = decide(record, False, last_attendances_dict.get(sep, None))
@@ -131,7 +131,7 @@ def bulk_submit(records: list) -> requests.Response:
                 collected.append(res)
                 if sep not in last_attendances_dict:
                     last_attendances_dict[sep] = res
-                else: 
+                else:
                     last_attendances_dict[sep].update(res)
 
         except Exception as error:

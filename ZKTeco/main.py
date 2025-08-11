@@ -77,17 +77,17 @@ def run_attendance():
       logger.info(f'Current time: {now}')
 
       def import_attendance(filters=None):
-          all = db.collect_filtered_records(filters=filters) if filters else db.collect_latest_records()
-          if not len(all):
+          records = db.collect_filtered_records(filters=filters) if filters else db.collect_latest_records()
+          if not len(records):
               return logger.info('No attendance records found.')
           else:
-                logger.info(f'Found {len(all)} attendance records')
+                logger.info(f'Found {len(records)} attendance records')
                 logger.info('Contacting ERP...')
 
                 if "--use-bulk" in sys.argv or "-b" in sys.argv:
-                    return module.transport.bulk_submit(all)
+                    return module.transport.bulk_submit(records)
 
-                for record in all:
+                for record in records:
                     try:
                         record['attendance_device_id'] = str(record.get('attendance_device_id'))
                         if record.get('_id'): del record['_id']

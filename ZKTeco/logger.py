@@ -1,5 +1,5 @@
 from logmachine import ContribLog
-import os, sys
+import os, sys, logging
 
 logger = ContribLog(
     "",
@@ -10,4 +10,11 @@ logger = ContribLog(
         "room": "bio-zk-monitoring",
         "headers": {}
     },
+    socketio=True
 )
+
+logging.getLogger("pymongo.client").setLevel(0)
+logging.getLogger("pymongo.command").setLevel(0)
+logging.getLogger("pymongo.serverSelection").setLevel(0)
+logging.getLogger("pymongo.connection").setLevel(0)
+logging.getLogger("pymongo.topology").setLevel(0)
