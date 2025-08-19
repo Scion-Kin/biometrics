@@ -34,5 +34,5 @@ while [[ "$current_date" < "$end_date" ]] || [[ "$current_date" == "$end_date" ]
     fi
 
     sleep 30
-    current_date="$next_date"
+    current_date=$(date -I -d "$next_date + 1 day")
 done
