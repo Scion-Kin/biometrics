@@ -1,4 +1,5 @@
 pyzk
+python-socketio
 logmachine
 requests
 pymongo
