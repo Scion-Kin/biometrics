@@ -5,7 +5,7 @@
 To install and configure the project, run the following command:
 
 ```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/Scion-Kin/biometrics/refs/heads/main/ZKTeco/setup.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/Scion-Kin/biometrics/refs/heads/main/ZKTeco/setup.sh)"
 ```
 
 ## Configuration
