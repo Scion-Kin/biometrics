@@ -12,15 +12,18 @@
     update the attendance records in ERPNext, Laravel, or other supported ERPs.
 '''
 
-import sys, importlib
+import sys
+import importlib
 from logger import logger
 from datetime import datetime, timedelta
 from bio_config import devices
 from db import db
 
-def handleExit(type, code=0):
-    if (code != 0): logger.error('MGS exit on error. Exiting...')
-    else: logger.info('MGS graceful exit. Shutting down. Please wait...')
+def handleExit(code=0):
+    if (code != 0):
+        logger.error('MGS exit on error. Exiting...')
+    else:
+        logger.info('MGS graceful exit. Shutting down. Please wait...')
 
     db.close_connection()
     exit(code)
@@ -30,7 +33,7 @@ def gISOl(date):
     return date.strftime('%Y-%m-%dT%H:%M:%S')
 
 
-supported_erps = {'ERPNext', 'MilMall'}
+supported_erps = {'MilMall'} # 'ERPNext', 
 
 if '-m' in sys.argv or '--module' in sys.argv:
     try:
@@ -44,12 +47,11 @@ if '-m' in sys.argv or '--module' in sys.argv:
 
     except (IndexError, ValueError, ImportError) as e:
         logger.error(f"Error loading module: {e}")
-        handleExit('error', 1)
+        handleExit(1)
 
 else:
     print(f"Usage: {sys.argv[0]} -m <module_name> [options]")
-    print(f"Supported modules: {', '.join(supported_erps)}")
-    print("Please specify a module to run the script.")
+    print(f"Please specify a module to run the script. Supported modules:\n\t{'\n\t'.join(supported_erps)}")
     exit(1)
 
 
@@ -57,7 +59,7 @@ def run_attendance():
   try:
       if not devices:
         logger.error('Please fill in the necessary details in bio_config.py before running the script')
-        handleExit('error', 1)
+        handleExit(1)
 
       fields = ["employee", "employee_name", "attendance_date", "company", "check_in", "check_out", "status", "attendance_device_id", "default_shift"]
       filters = {}
@@ -66,7 +68,7 @@ def run_attendance():
       employeesData = module.transport.get_users(filters=filters, fields=fields)
       if not employeesData or len(employeesData) == 0:
           logger.error('No employees found. Please check the configuration and try again.')
-          handleExit('error', 1)
+          handleExit(1)
 
       ids = [ str(d.get('employee')) for d in employeesData ]
       logger.info(f'Employees before filtering: {len(employeesData)}')
@@ -90,7 +92,9 @@ def run_attendance():
                 for record in records:
                     try:
                         record['attendance_device_id'] = str(record.get('attendance_device_id'))
-                        if record.get('_id'): del record['_id']
+                        if record.get('_id'):
+                            del record['_id']
+
                         record['timestamp'] = gISOl(record.get('timestamp'))
                         res = module.transport.decide(record)
                         logger.info(f'Response from ERP: {res}')
@@ -113,7 +117,7 @@ def run_attendance():
             to_date = datetime.strptime(sys.argv[to_index], '%Y-%m-%d')
             if from_date > to_date:
                 logger.error('The "from" date must be earlier than the "to" date')
-                handleExit('error', 1)
+                handleExit(1)
 
             from_date = from_date.replace(hour=0, minute=30, second=0, microsecond=0)
             to_date = to_date.replace(hour=23, minute=59, second=59, microsecond=999999)
@@ -127,16 +131,16 @@ def run_attendance():
 
         else:
             logger.error('Please provide the date range for import using --import <from_date> <to_date>')
-            handleExit('error', 1)
+            handleExit(1)
 
       finish = (datetime.now() - now).total_seconds()
-      logger.success(f'Attendance marking complete! Finished in ' + (f'{finish // 3600} hours, {(finish % 3600) // 60} minutes and {finish % 60} seconds' if finish > 3600 else f'{finish // 60} minutes and {finish % 60} seconds'))
+      logger.success('Attendance marking complete! Finished in ' + (f'{finish // 3600} hours, {(finish % 3600) // 60} minutes and {finish % 60} seconds' if finish > 3600 else f'{finish // 60} minutes and {finish % 60} seconds'))
       logger.success('Operation successful!')
-      handleExit('success')
+      handleExit(0)
 
   except (Exception) as error:
       logger.error(error)
-      handleExit('error', 1)
+      handleExit(1)
 
 
 if __name__ == '__main__':
