@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Copyright (c) 2024-2025 Buffer Punk Ltd. and contributors. All rights reserved.
 
 '''
-    Copyright (c) 2024-2025 Buffer Punk Ltd.
-    This module will be open-sourced under the GNU General Public License v3.0.
-    Before that, under no circumstances should this module be used by non-licensed users.
-    To obtain a license, please see license information at the top level of this repository.
-
     This module is used to integrate ZKTeco biometric devices with ERPNext or other ERPs.
     It provides functions to fetch attendance data from the device and
     update the attendance records in ERPNext, Laravel, or other supported ERPs.
@@ -33,7 +29,7 @@ def gISOl(date):
     return date.strftime('%Y-%m-%dT%H:%M:%S')
 
 
-supported_erps = {'MilMall'} # 'ERPNext', 
+supported_erps = {'MilMall', 'ERPNext' }
 
 if '-m' in sys.argv or '--module' in sys.argv:
     try:
@@ -83,25 +79,24 @@ def run_attendance():
           if not len(records):
               return logger.info('No attendance records found.')
           else:
-                logger.info(f'Found {len(records)} attendance records')
-                logger.info('Contacting ERP...')
+            logger.info(f'Found {len(records)} attendance records')
+            logger.info('Contacting ERP...')
 
-                if "--use-bulk" in sys.argv or "-b" in sys.argv:
-                    return module.transport.bulk_submit(records, ids=ids)
+            if "--use-bulk" in sys.argv or "-b" in sys.argv:
+                return module.transport.bulk_submit(records, ids=ids)
 
-                for record in records:
-                    try:
-                        record['attendance_device_id'] = str(record.get('attendance_device_id'))
-                        if record.get('_id'):
-                            del record['_id']
+            for record in records:
+                try:
+                    record['attendance_device_id'] = str(record.get('attendance_device_id'))
+                    if record.get('_id'):
+                        del record['_id']
 
-                        record['timestamp'] = gISOl(record.get('timestamp'))
-                        res = module.transport.decide(record)
-                        logger.info(f'Response from ERP: {res}')
+                    record['timestamp'] = gISOl(record.get('timestamp'))
+                    res = module.transport.decide(record)
+                    logger.info(f'Response from ERP: {res}')
 
-                    except Exception as error:
-                        logger.error(f'Error processing record {record.get("attendance_device_id")}: {error}')
-                        pass
+                except Exception as error:
+                    logger.error(f'Error processing record {record.get("attendance_device_id")}: {error}')
 
       now = datetime.now()
       if not is_import:

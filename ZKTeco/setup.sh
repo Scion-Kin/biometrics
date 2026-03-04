@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 set -e
+
+if [ "$EUID" -ne 0 ]; then
+    echo -e "\x1b[1m[\x1b[31m ERROR \x1b[0m\x1b[1m]\x1b[22m Please run this script as root."
+    exit 1
+fi
+
+MODULES=("erpnext" "milmall")
+if [ "$#" -gt 0 ]; then
+    MODULE="$1"
+    if [[ ! " ${MODULES[*]} " =~ " ${MODULE} " ]]; then
+        echo -e "\x1b[1m[\x1b[31m ERROR \x1b[0m\x1b[1m]\x1b[22m Invalid module specified. Please choose from: ${MODULES[*]}"
+        exit 1
+    fi
+fi
+
 sudo apt-get update
 sudo apt-get install -y gnupg zsh
 
@@ -29,7 +44,7 @@ else
 fi
 
 echo "Switching to 'biouser' user..."
-sudo -i -u biouser bash << 'EOF'
+sudo -i -u biouser MODULE="$MODULE" bash << 'EOF'
 set -e
 cd ~
 # check if oh-my-zsh is installed
@@ -47,14 +62,16 @@ fi
 cd $HOME/biometrics
 
 # Install Python dependencies
-python3 -m venv venv
+if [ ! -d "venv" ]; then
+    python3 -m venv venv
+fi
 source venv/bin/activate
 pip install --upgrade pip
 pip install -r ZKTeco/requirements.txt
 
 echo -e "\x1b[1m[\x1b[33m INFO \x1b[0m\x1b[1m]\x1b[22m Setting up the cron job..."
 if [ -f "cf/runner.sh" ]; then
-  (crontab -l 2>/dev/null; echo "*/10 * * * * cd $HOME/biometrics && cf/runner.sh >> debug.log 2>&1") | crontab -
+  crontab -l 2>/dev/null | grep -F 'cf/runner.sh' || (crontab -l 2>/dev/null; echo "*/10 * * * * cd $HOME/biometrics && cf/runner.sh ${MODULE:-erpnext} >> debug.log 2>&1") | crontab -
 fi
 
 echo -e "\x1b[1m[\x1b[32m SUCCESS \x1b[0m\x1b[1m]\x1b[22m Set up successfull"

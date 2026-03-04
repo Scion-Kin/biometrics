@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Check arguments
-if [ -z "$1" ] || [ -z "$2" ]; then
-    echo "Usage: $0 <start_date: YYYY-MM-DD> <end_date: YYYY-MM-DD>"
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+    echo "Usage: $0 <start_date: YYYY-MM-DD> <end_date: YYYY-MM-DD> <module: erpnext|milmall>"
     exit 1
 fi
 
@@ -26,7 +26,7 @@ current_date="$start_date"
 while [[ "$current_date" < "$end_date" ]] || [[ "$current_date" == "$end_date" ]]; do
     next_date=$(date -I -d "$current_date + 1 day")
 
-    python3 main.py --verbose -m MilMall --import "$current_date" "$next_date" -b
+    python3 main.py --verbose -m "$3" --import "$current_date" "$next_date" -b
 
     # Break if we reached the end date
     if [[ "$current_date" == "$end_date" ]]; then

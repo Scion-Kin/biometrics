@@ -33,7 +33,7 @@ if __name__ == "__main__":
                 else:
                     logger.error(f"Failed to insert records into the database for device: {device['name']}")
                     logger.error(f"Possible reason: {re}")
-                    logger.error(f"Please solve the issue and try again.")
+                    logger.error("Please solve the issue and try again.")
 
         except ConnectionError as ce:
             logger.error(f"Connection error while processing device {device['name']}: {ce}")
@@ -41,6 +41,6 @@ if __name__ == "__main__":
         except Exception as e:
             logger.error(f"Error while processing device {device['name']}: {e}")
 
-    exec(device, 'enable_device')
+        exec(device, 'enable_device')
     db.close_connection()
     logger.success("All devices processed. Main script will run next.")

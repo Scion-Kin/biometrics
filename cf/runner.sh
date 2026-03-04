@@ -27,7 +27,7 @@ if (( (now - last_process) > 1200 )); then
     sudo service cron start
 else
     echo "Last process was within the last 20 minutes. No missed data to import."
-    python3 main.py -m MilMall -b
-fi 
+    python3 main.py -m "$1" -b
+fi
 
 printf "LAST=%s\n" "$(date -Iseconds)" > att_process.ring
