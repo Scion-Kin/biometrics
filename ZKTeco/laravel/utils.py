@@ -1,24 +1,24 @@
 import requests
 from datetime import datetime, timedelta
-from milmall.config import api_url, client_id, client_secret, username, password
-from milmall.exceptions import AuthenticationError, NetworkError, TokenRefreshError, LoginError
+from laravel.config import api_url, client_id, client_secret, username, password
+from laravel.exceptions import AuthenticationError, NetworkError, TokenRefreshError, LoginError
 from db import db
 from logger import logger
 
 default_headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'User-Agent': 'Mozilla/5.0 (compatible; MilMallBot/1.0; +https://milmall.rw/bot)'
+    'User-Agent': 'Mozilla/5.0 (compatible; laravelBot/1.0; +https://laravel.com)'
 }
 
-def login_to_milmall() -> dict:
+def login_to_laravel() -> dict:
     """
-    Logs in to the MilMall API and returns the access token.
+    Logs in to the laravel API and returns the access token.
     
-    :param username: The username for MilMall API
-    :param password: The password for MilMall API
-    :param client_secret: The client secret for MilMall API
-    :param client_id: The client ID for MilMall API
+    :param username: The username for laravel API
+    :param password: The password for laravel API
+    :param client_secret: The client secret for laravel API
+    :param client_id: The client ID for laravel API
     :return: Access token if login is successful, None otherwise (stores the bearer token in JSON file, with its expiry time)
     """
     url = f"{api_url}/oauth/token"
@@ -58,8 +58,8 @@ def refresh_token() -> dict:
     """
     Refreshes the access token using the refresh token.
     
-    :param client_id: The client ID for MilMall API
-    :param client_secret: The client secret for MilMall API
+    :param client_id: The client ID for laravel API
+    :param client_secret: The client secret for laravel API
     :return: New access token if refresh is successful, None otherwise
     """
     client = db.get_db('auth')
@@ -103,7 +103,7 @@ def refresh_token() -> dict:
 
 def try_auth() -> dict:
     """
-    Attempts to authenticate with the MilMall API and returns the authentication data.
+    Attempts to authenticate with the laravel API and returns the authentication data.
 
     :return: A dictionary containing authentication data
     """
@@ -111,8 +111,8 @@ def try_auth() -> dict:
         return refresh_token()
     except (AuthenticationError, TokenRefreshError) as e:
         logger.log(f"Authentication error: {e}", 'ERROR')
-        logger.log("Attempting to login to MilMall...", 'INFO')
-        return login_to_milmall()
+        logger.log("Attempting to login to laravel...", 'INFO')
+        return login_to_laravel()
     
 
 def load_storage() -> dict:
@@ -144,10 +144,10 @@ def load_storage() -> dict:
 
 def format_data(data: dict={}, reverse: bool=False, keeps: list=None) -> dict:
     """
-    Formats the data to match the MilMall API requirements.
+    Formats the data to match the laravel API requirements.
 
     :param data: The data to be formatted
-    :param reverse: If True, reverses the formatting (from MilMall to Attendance Algorithm API format)
+    :param reverse: If True, reverses the formatting (from laravel to Attendance Algorithm API format)
     :param keeps: List of required fields to keep in the formatted data
     :return dict: Formatted data as a dictionary
     """

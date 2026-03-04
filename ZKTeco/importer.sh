@@ -2,7 +2,7 @@
 
 # Check arguments
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
-    echo "Usage: $0 <start_date: YYYY-MM-DD> <end_date: YYYY-MM-DD> <module: erpnext|milmall>"
+    echo "Usage: $0 <start_date: YYYY-MM-DD> <end_date: YYYY-MM-DD> <module: erpnext|laravel>"
     exit 1
 fi
 

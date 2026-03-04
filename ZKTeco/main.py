@@ -29,7 +29,7 @@ def gISOl(date):
     return date.strftime('%Y-%m-%dT%H:%M:%S')
 
 
-supported_erps = {'MilMall', 'ERPNext' }
+supported_erps = {'Laravel', 'ERPNext' }
 
 if '-m' in sys.argv or '--module' in sys.argv:
     try:

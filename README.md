@@ -10,8 +10,8 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/Scion-Kin/biometrics/ref
 
 This command will download and execute the setup script, which will install the
 necessary dependencies and configure the project for ERPNext integration.
-If you want Laravel/Milmall integration,
-replace `-m erpnext` with `-m milmall` in the command above.
+If you want Laravel integration,
+replace `-m erpnext` with `-m laravel` in the command above.
 
 ## Configuration
 
@@ -28,10 +28,10 @@ For ERPNext edit the configuration file:
 nano ~/biometrics/ZKTeco/erpnext/config.py
 ```
 
-For Laravel/Milmall edit the configuration file:
+For Laravel edit the configuration file:
 
 ```bash
-nano ~/biometrics/ZKTeco/milmall/config.py
+nano ~/biometrics/ZKTeco/laravel/config.py
 ```
 
 For the biometrics service edit the configuration file:

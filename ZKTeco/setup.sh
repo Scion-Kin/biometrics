@@ -6,7 +6,7 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-MODULES=("erpnext" "milmall")
+MODULES=("erpnext" "laravel")
 if [ "$#" -gt 0 ]; then
     MODULE="$1"
     if [[ ! " ${MODULES[*]} " =~ " ${MODULE} " ]]; then

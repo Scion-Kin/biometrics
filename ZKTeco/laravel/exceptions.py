@@ -36,7 +36,7 @@ class NetworkError(Exception):
 
 class ConfigurationError(Exception):
     """Exception raised for configuration-related errors."""
-    def __init__(self, message="Configuration error. Please check your MilMall API settings or environment variables."):
+    def __init__(self, message="Configuration error. Please check your laravel API settings or environment variables."):
         self.message = message
         super().__init__(self.message)
 

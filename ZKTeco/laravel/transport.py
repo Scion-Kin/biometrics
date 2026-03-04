@@ -1,14 +1,14 @@
 import requests
 from datetime import datetime
-from milmall.utils import load_storage, format_data, try_auth
-from milmall.config import urls, business_id, api_url
-from milmall.exceptions import AttendanceFetchError, AuthenticationError, NetworkError, AuthenticationError, UnknownResponseError, TokenRefreshError
+from laravel.utils import load_storage, format_data, try_auth
+from laravel.config import urls, business_id, api_url
+from laravel.exceptions import AttendanceFetchError, AuthenticationError, NetworkError, AuthenticationError, UnknownResponseError, TokenRefreshError
 from logger import logger
 
 default_headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'User-Agent': 'Mozilla/5.0 (compatible; MilMallBot/1.0; +https://milmall.rw/bot)'
+    'User-Agent': 'Mozilla/5.0 (compatible; laravelBot/1.0; +https://laravel.com/)'
 }
 
 
@@ -28,7 +28,7 @@ def time_str(dt: str, reverse=False) -> datetime | str:
 
 def get_attendance(uid, auth) -> dict:
     """
-    Fetches attendance data for a specific user from the MilMall API.
+    Fetches attendance data for a specific user from the laravel API.
 
     :param uid: The unique identifier for the user
     :param auth: A dictionary containing authentication details (access token)
@@ -45,7 +45,7 @@ def get_attendance(uid, auth) -> dict:
 
     if response.status_code == 200:
         data = response.json()["data"] if isinstance(response.json()["data"], dict) else {'id': None}
-        del data['id']  # Remove the 'id' field from the data since it references an attendance record in the MilMall API rather than a user ID.
+        del data['id']  # Remove the 'id' field from the data since it references an attendance record in the laravel API rather than a user ID.
         return data
 
     else:
@@ -54,7 +54,7 @@ def get_attendance(uid, auth) -> dict:
 
 def get_users(filters: dict={}, fields: list=[]) -> dict:
     """
-    Fetches employee data from the MilMall API.
+    Fetches employee data from the laravel API.
 
     :param user: The user identifier (optional, defaults to None)
     :return: Employee data as a dictionary
@@ -81,7 +81,7 @@ def get_users(filters: dict={}, fields: list=[]) -> dict:
 
 def get_bulk_attendance(date: str, auth) -> list:
     """
-    Fetches bulk attendance data for a specific date from the MilMall API.
+    Fetches bulk attendance data for a specific date from the laravel API.
 
     :param date: The date for which to fetch attendance data (format: 'YYYY-MM-DD')
     :param auth: A dictionary containing authentication details (access token)
@@ -104,7 +104,7 @@ def get_bulk_attendance(date: str, auth) -> list:
 
 def bulk_submit(records: list, ids: list=[]) -> requests.Response:
     """
-    Sends a bulk request to the MilMall API to process attendance records.
+    Sends a bulk request to the laravel API to process attendance records.
 
     :param records: A list of attendance records to be processed
     :param attendances: A list of attendance records to be checked against
@@ -193,7 +193,7 @@ def decide(data, submit=True, last=None) -> requests.Response:
 
 def clock_in(data, auth, submit=True) -> requests.Response:
     """
-    Sends a clock-in request to the MilMall API.
+    Sends a clock-in request to the laravel API.
 
     :param data: A dictionary containing the clock-in data
     :param auth: A dictionary containing authentication details (access token)
@@ -205,7 +205,7 @@ def clock_in(data, auth, submit=True) -> requests.Response:
 
         headers = { 'Authorization': f"Bearer {auth['access_token']}", **default_headers }
 
-        # Ensure data is formatted correctly (Compatible with MilMall API)
+        # Ensure data is formatted correctly (Compatible with laravel API)
         if data.get('timestamp'):
             data['clock_in_time'] = data.pop('timestamp')
             data['clock_in_note'] = "Automatically clocked in using biometric device"
@@ -237,7 +237,7 @@ def clock_in(data, auth, submit=True) -> requests.Response:
 
 def clock_out(data, auth, submit=True) -> requests.Response:
     """
-    Sends a clock-out request to the MilMall API.
+    Sends a clock-out request to the laravel API.
 
     :param data: A dictionary containing the clock-out data
     :param auth: A dictionary containing authentication details (access token)
@@ -249,7 +249,7 @@ def clock_out(data, auth, submit=True) -> requests.Response:
 
         headers = { 'Authorization': f"Bearer {auth['access_token']}", **default_headers }
 
-        # Ensure data is formatted correctly (Compatible with MilMall API)
+        # Ensure data is formatted correctly (Compatible with laravel API)
         if data.get('timestamp') or data.get('check_out'):
             data['clock_out_time'] = data.pop('timestamp') if 'timestamp' in data else data.get('check_out')
             if 'clock_out_note' not in data:
